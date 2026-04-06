@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import * as AOS from 'aos';
 @Component({
   selector: 'app-discount',
@@ -6,8 +6,11 @@ import * as AOS from 'aos';
   templateUrl: './discount.component.html',
   styleUrl: './discount.component.css',
 })
-export class DiscountComponent implements OnInit{
-  ngOnInit(): void {
-    AOS.init();
-  }
+export class DiscountComponent implements AfterViewInit {
+  ngAfterViewInit() {
+  AOS.init({
+    duration: 800,
+    once: true
+  });
+}
 }
