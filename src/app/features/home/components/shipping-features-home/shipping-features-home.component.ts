@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { NgxScrollAnimationsDirective } from 'ngx-scroll-animations';
 
 @Component({
   selector: 'app-shipping-features-home',
-  imports: [],
+  imports: [NgxScrollAnimationsDirective ],
   templateUrl: './shipping-features-home.component.html',
   styleUrl: './shipping-features-home.component.css',
 })

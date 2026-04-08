@@ -1,0 +1,51 @@
+swiper-container::part(button-prev),
+swiper-container::part(button-next) {
+  background: rgba(255,255,255,0.9);
+  color: #22c55e;
+  width: 48px;
+  height: 48px;
+  padding: 14px;
+  border-radius: 9999px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  transition: 0.3s;
+  box-sizing: border-box;
+  margin-inline: 16px ;
+}
+
+
+swiper-container::part(bullet-active) {
+    background-color: white;
+    border-radius: 6px;
+    width: 32px;
+    height: 12px;
+    transition: all .3s;
+    opacity: 1 ;
+}
+swiper-container::part(bullet) {
+    transition: all .3s;
+    opacity: 1 ;
+    background: #ffffff80 ;
+    width: 12px ;
+    height: 12px ;
+}
+swiper-container::part(bullet):hover ,
+swiper-container::part(bullet-active):hover{
+    transform: scale(1.1);
+    background-color: #fffc ;
+}
+
+swiper-container::part(button-prev):hover,
+swiper-container::part(button-next):hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+@media (min-width: 768px) {
+  swiper-container::part(button-prev),
+  swiper-container::part(button-next) {
+    display: flex;
+  }
+}

@@ -1,0 +1,8 @@
+
+
+.mySwiper2 swiper-slide.swiper-slide-thumb-active div {
+    border: 4px solid #337ab7
+}
+.mySwiper2 swiper-slide div:hover {
+    border: 4px solid #337ab7
+}

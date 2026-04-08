@@ -4,6 +4,7 @@ import { provideRouter, withInMemoryScrolling, withViewTransitions } from '@angu
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideNgxScrollAnimations } from 'ngx-scroll-animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,11 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({scrollPositionRestoration:'top'}),
       withViewTransitions()),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch()),
+    provideNgxScrollAnimations({
+  speed: 300,
+  animationName: 'fade-in-up', // default only
+  once: true,
+})
   ]
 };

@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, input, signal } from '@angular/core';
 import { StarsProductComponent } from "../../../../shared/ui/stars-product/stars-product.component";
 import { DiscountCalcPipe } from '../../../../shared/pipes/discount-calc-pipe';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
   imports: [StarsProductComponent,DiscountCalcPipe,FormsModule,CommonModule],
   templateUrl: './info-product.component.html',
   styleUrl: './info-product.component.css',
+  schemas:[CUSTOM_ELEMENTS_SCHEMA]
 })
 export class InfoProductComponent {
   product=input.required<Iproduct>()
@@ -26,6 +27,16 @@ export class InfoProductComponent {
 
   if (val < min) val = min;
   if (val > max) val = max;
+
 }
+
+
+
+
+
+
+
+
+
 
 }

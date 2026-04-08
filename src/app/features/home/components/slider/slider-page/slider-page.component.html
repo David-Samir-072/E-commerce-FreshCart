@@ -1,0 +1,25 @@
+        <div
+  class="h-100 item flex items-center justify-center"
+>
+  <div
+    class="overlay py-20 text-white p-4 w-full h-full bg-linear-to-r from-green-500/90 to-green-400/50"
+  >
+    <div class="container h-full content-center">
+      <h2 class="text-white text-3xl font-bold mb-4 max-w-96" >
+       {{title()}}
+      </h2>
+      <p style="opacity: 1; transform: none">{{p()}}</p>
+      <div class="mt-4" >
+        <a [class]="btn1Color()"
+          class="btn bg-white border-2 border-white/50 inline-block px-6 py-2 rounded-lg font-semibold hover:scale-105 transition-transform"
+          href="/products"
+          >{{btn1()}}</a
+        ><a
+          class="btn bg-transparent border-2 border-white/50 text-white ml-2 inline-block px-6 py-2 rounded-lg font-semibold hover:scale-105 transition-transform"
+          href="/deals"
+          >{{btn2()}}</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
