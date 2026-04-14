@@ -6,41 +6,41 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
-    title: 'Home',
+    title: 'FreshCart | Home',
   },
   {
     path: 'shop',
     loadComponent: () => import('./features/shop/shop.component').then((m) => m.ShopComponent),
-    title: 'Shop',
+    title: 'FreshCart | Shop',
   },
   {
     path: 'categories',
     loadComponent: () =>
       import('./features/categories/categories.component').then((m) => m.CategoriesComponent),
-    title: 'Categories',
+    title: 'FreshCart | Categories',
   },
   {
     path: 'categories/:slug/:id',
     loadComponent: () =>
       import('./features/categories/categories.component').then((m) => m.CategoriesComponent),
-    title: 'Categories',
+    title: 'FreshCart | Categories',
   },
   {
     path: 'brands',
     loadComponent: () =>
       import('./features/brands/brands.component').then((m) => m.BrandsComponent),
-    title: 'Brands',
+    title: 'FreshCart | Brands',
   },
   {
     path: 'wishlist',
     loadComponent: () =>
       import('./features/wishlist/wishlist.component').then((m) => m.WishlistComponent),
-    title: 'Wishlist',
+    title: 'FreshCart | Wishlist',
   },
   {
     path: 'cart',
     loadComponent: () => import('./features/cart/cart.component').then((m) => m.CartComponent),
-    title: 'Cart',
+    title: 'FreshCart | Cart',
   },
 
   {
@@ -49,14 +49,14 @@ export const routes: Routes = [
       import('./features/product-details/product-details.component').then(
         (m) => m.ProductDetailsComponent,
       ),
-    title: 'Product Details',
+    title: 'FreshCart | Product Details',
   },
 
   {
     path: 'checkout',
     loadComponent: () =>
       import('./features/checkout/checkout.component').then((m) => m.CheckoutComponent),
-    title: 'Checkout',
+    title: 'FreshCart | Checkout',
     canActivate:[authGuard]
   },
   {
@@ -65,26 +65,26 @@ export const routes: Routes = [
       import('./features/forgot-password/forgot-password.component').then(
         (m) => m.ForgotPasswordComponent,
       ),
-    title: 'Forgot Password',
+    title: 'FreshCart | Forgot Password',
   },
   {
     path: 'login',
     loadComponent: () => import('./features/login/login.component').then((m) => m.LoginComponent),
-    title: 'Login',
+    title: 'FreshCart | Login',
     canActivate:[isSignedGuard]
   },
   {
     path: 'register',
     loadComponent: () =>
       import('./features/register/register.component').then((m) => m.RegisterComponent),
-    title: 'Register',
+    title: 'FreshCart | Register',
     canActivate:[isSignedGuard]
   },
   {
     path: 'allorders',
     loadComponent: () =>
       import('./features/orders/orders.component').then((m) => m.OrdersComponent),
-    title: 'Orders',
+    title: 'FreshCart | Orders',
     canActivate:[authGuard]
   },
   {
@@ -93,13 +93,13 @@ export const routes: Routes = [
       import('./features/product-search/product-search.component').then(
         (m) => m.ProductSearchComponent,
       ),
-    title: 'Search',
+    title: 'FreshCart | Search',
   },
   {
     path: 'profile',
     loadComponent: () =>
       import('./features/profile/profile.component').then((m) => m.ProfileComponent),
-    title: 'Profile',
+    title: 'FreshCart | Profile',
     canActivate:[authGuard]
   },
 
@@ -107,6 +107,6 @@ export const routes: Routes = [
     path: '**',
     loadComponent: () =>
       import('./features/notfound/notfound.component').then((m) => m.NotfoundComponent),
-    title: 'Page Not Found',
+    title: 'FreshCart | Page Not Found',
   },
 ];

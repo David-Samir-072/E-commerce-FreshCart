@@ -25,10 +25,7 @@ export class NavbarComponent implements OnInit {
   loadingCategories = signal<boolean>(false)
   categoriesList = signal<Icategory[]>([])
 
-  //* CartInLocalStorageService & WishListService are not used here but injecting them will call 
-  //* its constructor and restore the data
   private readonly cartInLocalStorageService = inject(CartInLocalStorageService)
-  // private readonly wishListService=inject(WishListService)
 
   isLogged = computed<boolean>(() => this.authService.isLogged())
   favorateItemsCount = computed<number>(() => this.wishListService.wishListIds().length)
