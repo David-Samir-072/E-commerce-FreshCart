@@ -1,1 +1,87 @@
-<p>cart works!</p>
+@if (loading()) {
+  <app-loading-page 
+  [loadingTitle]="'Loading your cart...'"
+  [loadingSubtitle]="'just a moment'"
+  ></app-loading-page>
+} @else {
+@if (cartDetails().length) {
+    <div class="bg-gray-50 min-h-screen py-8">
+    <div class="container mx-auto px-4">
+      <div class="mb-8">
+        <nav class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+          <a routerLink="/" class="hover:text-primary-600 transition">Home</a><span>/</span
+          ><span class="text-gray-900 font-medium">Shopping Cart</span>
+        </nav>
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              <span
+                class="bg-primary-600 text-white w-12 h-12 rounded-xl flex items-center justify-center"
+                ><svg
+                  data-prefix="fas"
+                  data-icon="cart-shopping"
+                  class="svg-inline--fa fa-cart-shopping"
+                  role="img"
+                  viewBox="0 0 640 512"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M24-16C10.7-16 0-5.3 0 8S10.7 32 24 32l45.3 0c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3c6.2 34.2 36 59.1 70.8 59.1L456 384c13.3 0 24-10.7 24-24s-10.7-24-24-24l-255.9 0c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3 303.6 0c30.8 0 57.2-21.9 62.9-52.2L568.9 69.9C572.6 50.2 557.5 32 537.4 32l-412.7 0-.4-2c-4.8-26.6-28-46-55.1-46L24-16zM208 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"
+                  ></path></svg></span
+              >Shopping Cart
+            </h1>
+            <p class="text-gray-500 mt-2">
+              You have
+              <span class="font-semibold text-primary-600">{{ cartDetails().length }} item</span>
+              in your cart
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2">
+          <div class="grid gap-4">
+            @for (item of cartDetails(); track item.product.id) {
+              <app-cart-item (totalPrice)="totalPrice.set($event)" (updateCartDetails)="cartDetails.set($event)" [item]="item"></app-cart-item>
+            }
+          </div>
+
+          <div class="mt-6 pt-6 border-t border-gray-200 flex items-center justify-between">
+            <a
+              class="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center gap-2"
+              routerLink="/"
+              ><span>←</span> Continue Shopping</a
+            ><button (click)="clearCartData()"
+              class="group flex items-center cursor-pointer gap-2 text-sm text-gray-400 hover:text-red-500 transition-colors"
+            >
+              <svg
+                data-prefix="fas"
+                data-icon="trash"
+                class="svg-inline--fa fa-trash text-xs group-hover:scale-110 transition-transform"
+                role="img"
+                viewBox="0 0 448 512"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M136.7 5.9L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-8.7-26.1C306.9-7.2 294.7-16 280.9-16L167.1-16c-13.8 0-26 8.8-30.4 21.9zM416 144L32 144 53.1 467.1C54.7 492.4 75.7 512 101 512L347 512c25.3 0 46.3-19.6 47.9-44.9L416 144z"
+                ></path></svg
+              ><span>Clear all items</span>
+            </button>
+          </div>
+        </div>
+        <app-cart-right-side
+          [cartDetails]="cartDetails()"
+          [totalPrice]="totalPrice()"
+        ></app-cart-right-side>
+      </div>
+    </div>
+  </div>
+} @else {
+
+  <app-empty-cart></app-empty-cart>
+}
+}
+
+

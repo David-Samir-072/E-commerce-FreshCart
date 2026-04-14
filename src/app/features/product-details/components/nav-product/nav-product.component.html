@@ -34,9 +34,9 @@
       </li>
       <li class="flex items-center">
         <a
+          [routerLink]="['/categories', product().category.slug, product().category._id]"
           class="text-gray-500 cursor-pointer hover:text-primary-600 transition flex items-center gap-1.5"
-         
-          >{{product().category?.name}}</a
+          >{{ product().category?.name }}</a
         ><svg
           data-prefix="fas"
           data-icon="chevron-right"
@@ -53,9 +53,10 @@
       </li>
       <li class="flex items-center">
         <a
+          routerLink="/shop"
+          [queryParams]="{subcategory:product().subcategory[0]?._id }"
           class="text-gray-500 cursor-pointer hover:text-primary-600 transition flex items-center gap-1.5"
-          href="/categories/6439d58a0049ad0b52b9003f/6407f1bcb575d3b90bf95797"
-          >{{product().subcategory?product().subcategory[0]?.name:''}}</a
+          >{{ product().subcategory.length ? product().subcategory[0]?.name : '' }}</a
         ><svg
           data-prefix="fas"
           data-icon="chevron-right"
@@ -70,7 +71,7 @@
           ></path>
         </svg>
       </li>
-      <li class="text-gray-900 font-medium truncate max-w-xs">{{product().title}}</li>
+      <li class="text-gray-900 font-medium truncate max-w-xs">{{ product().title }}</li>
     </ol>
   </div>
 </nav>

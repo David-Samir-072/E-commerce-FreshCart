@@ -11,25 +11,27 @@ import { ProductsService } from '../../../../core/services/products.service';
 })
 export class ProductsHomeComponent implements OnInit {
 
-  private readonly productsService=inject(ProductsService)
-  productsList=signal<Iproduct[]>([]);
+
+  private readonly productsService = inject(ProductsService)
+
+  productsList = signal<Iproduct[]>([]);
 
   ngOnInit(): void {
     this.getAllProductsData();
   }
 
-  getAllProductsData(){
+  getAllProductsData() {
     this.productsService.getAllProducts().subscribe({
-      next:res=>{
-        console.log(res.data);
-        
+      next: res => {
         this.productsList.set(res.data)
       },
-      error:err=>{
-         console.log(err);
+      error: err => {
+        console.log(err);
       }
     }
-      
+
     )
   }
+
+
 }

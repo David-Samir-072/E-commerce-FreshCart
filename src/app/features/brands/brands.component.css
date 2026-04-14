@@ -1,0 +1,12 @@
+:host ::ng-deep .brands-pagination .ngx-pagination .current {
+  border: 1px solid #6d28d9 !important;
+  background: #7c3aed !important;
+  color: #fff !important;
+}
+
+:host ::ng-deep .brands-pagination .ngx-pagination a:hover,
+:host ::ng-deep .brands-pagination .ngx-pagination button:hover {
+  background: #f3f0ff !important;
+  border-color: #7c3aed !important;
+  color: #5b21b6 !important;
+}

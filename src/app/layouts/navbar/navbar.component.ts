@@ -1,7 +1,13 @@
-import { Component} from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FlowbiteService } from '../../core/services/flowbite.service';
-import { initFlowbite } from 'flowbite';
+import { Dropdown, initFlowbite } from 'flowbite';
 import { RouterLink, RouterLinkActive } from "@angular/router";
+import { AuthService } from '../../core/auth/services/auth.service';
+import { MystorageService } from '../../core/services/mystorage.service';
+import { CartService } from '../../core/services/cart.service';
+import { WishListService } from '../../core/services/wish-list.service';
+import { CartInLocalStorageService } from '../../core/services/cart-in-local-storage.service';
+import { CategoriesService } from '../../core/services/categories.service';
 
 @Component({
   selector: 'app-navbar',
@@ -9,12 +15,114 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
-export class NavbarComponent {
-  constructor(private flowbiteService: FlowbiteService) {}
+export class NavbarComponent implements OnInit {
+  constructor(private flowbiteService: FlowbiteService) { }
+  private readonly authService = inject(AuthService)
+  private readonly mystorageService = inject(MystorageService)
+  private readonly cartService = inject(CartService)
+  private readonly categoriesService = inject(CategoriesService)
+  private readonly wishListService = inject(WishListService)
+  loadingCategories = signal<boolean>(false)
+  categoriesList = signal<Icategory[]>([])
+
+  //* CartInLocalStorageService & WishListService are not used here but injecting them will call 
+  //* its constructor and restore the data
+  private readonly cartInLocalStorageService = inject(CartInLocalStorageService)
+  // private readonly wishListService=inject(WishListService)
+
+  isLogged = computed<boolean>(() => this.authService.isLogged())
+  favorateItemsCount = computed<number>(() => this.wishListService.wishListIds().length)
+  cartItemsCount = computed<number>(() => {
+    if (this.isLogged()) {
+      return this.cartService.numOfCartItems()
+    } else {
+      return this.cartInLocalStorageService.cartList().length
+    }
+  })
+
+  user = computed<Iuser>(() => {
+    if (this.isLogged()) {
+      return JSON.parse(this.mystorageService.getUserObject()!)
+    } else {
+      return {} as Iuser
+    }
+  })
 
   ngOnInit(): void {
     this.flowbiteService.loadFlowbite((flowbite) => {
       initFlowbite();
     });
+
+    this.getNumOfCartItems();
+    this.getAllCategoriesData();
+    this.getWishListItemsCount();
   }
+
+
+
+  signOut() {
+    this.authService.logOut()
+  }
+
+  closeDropdown(): void {
+    const dropdown = document.getElementById('user-dropdown');
+    const trigger = document.querySelector('[data-dropdown-toggle="user-dropdown"]') as HTMLElement;
+    if (dropdown && trigger) {
+      new Dropdown(dropdown, trigger).hide();
+    }
+  }
+
+
+
+  getNumOfCartItems() {
+    if (this.isLogged()) {
+      this.cartService.getLoggedUserCart().subscribe({
+        next: res => {
+          this.cartService.numOfCartItems.set(res.numOfCartItems);
+          if (res.data.products.length) {
+            this.mystorageService.set('cartOwner', res.data.cartOwner)
+          }
+        }
+      })
+    } else {
+      this.cartService.numOfCartItems.set(this.cartInLocalStorageService.cartList().length);
+    }
+  }
+
+
+  getAllCategoriesData() {
+    this.loadingCategories.set(true)
+    this.categoriesService.getAllCategories().subscribe({
+      next: res => {
+        this.categoriesList.set(res.data)
+        this.loadingCategories.set(false)
+      },
+      error: err => {
+        this.loadingCategories.set(false)
+      }
+    })
+  }
+
+
+  getWishListItemsCount() {
+    if (this.isLogged()) {
+      this.wishListService.getLoggedUserWishlist().subscribe({
+        next: res => {
+          const wishList = signal<Iproduct[]>([])
+          wishList.set(res.data)
+          if (wishList().length) {
+            this.wishListService.wishListIds.set(wishList().map((item) => item._id))
+            console.log(this.wishListService.wishListIds());
+            console.log(this.favorateItemsCount());
+            
+          }
+        }
+      })
+    }
+
+  }
+
+
+
+
 }

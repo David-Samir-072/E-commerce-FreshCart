@@ -1,3 +1,8 @@
+interface IlocalProduct extends Iproduct{
+  count:number
+}
+
+
 interface Iproduct {
   sold: number;
   images: string[];

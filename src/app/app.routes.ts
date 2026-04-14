@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
-import { DetailsCategoryComponent } from './features/details-category/details-category.component';
+import { authGuard } from './core/auth/guards/auth-guard';
+import { isSignedGuard } from './core/auth/guards/is-signed-guard';
 
 export const routes: Routes = [
   {
@@ -21,10 +21,8 @@ export const routes: Routes = [
   },
   {
     path: 'categories/:slug/:id',
-   loadComponent: () =>
-      import('./features/details-category/details-category.component').then(
-        (m) => m.DetailsCategoryComponent,
-      ),
+    loadComponent: () =>
+      import('./features/categories/categories.component').then((m) => m.CategoriesComponent),
     title: 'Categories',
   },
   {
@@ -59,6 +57,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/checkout/checkout.component').then((m) => m.CheckoutComponent),
     title: 'Checkout',
+    canActivate:[authGuard]
   },
   {
     path: 'forgot-password',
@@ -72,18 +71,21 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./features/login/login.component').then((m) => m.LoginComponent),
     title: 'Login',
+    canActivate:[isSignedGuard]
   },
   {
     path: 'register',
     loadComponent: () =>
       import('./features/register/register.component').then((m) => m.RegisterComponent),
     title: 'Register',
+    canActivate:[isSignedGuard]
   },
   {
-    path: 'orders',
+    path: 'allorders',
     loadComponent: () =>
       import('./features/orders/orders.component').then((m) => m.OrdersComponent),
     title: 'Orders',
+    canActivate:[authGuard]
   },
   {
     path: 'search',
@@ -98,6 +100,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/profile/profile.component').then((m) => m.ProfileComponent),
     title: 'Profile',
+    canActivate:[authGuard]
   },
 
   {

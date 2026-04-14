@@ -1,2 +1,6 @@
-<app-nav-product [product]="product()"></app-nav-product>
-<app-info-product [product]="product()"></app-info-product>
+@if (loading()) {
+    <app-loading-product-details></app-loading-product-details>
+} @else {
+  <app-nav-product [product]="product()"></app-nav-product>
+  <app-info-product [product]="product()"></app-info-product>
+}

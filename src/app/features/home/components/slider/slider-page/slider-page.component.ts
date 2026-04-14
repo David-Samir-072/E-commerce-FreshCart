@@ -1,8 +1,9 @@
 import { Component, input } from '@angular/core';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-slider-page',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './slider-page.component.html',
   styleUrl: './slider-page.component.css',
 })

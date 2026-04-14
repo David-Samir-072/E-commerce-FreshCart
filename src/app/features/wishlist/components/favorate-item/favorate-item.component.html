@@ -1,0 +1,130 @@
+<div
+  class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 md:px-6 md:py-5 items-center hover:bg-gray-50/50 transition-colors"
+>
+  <div class="md:col-span-6 flex items-center gap-4">
+    <a [routerLink]="['/details', product().slug, product().id]"
+      class="w-20 h-20 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden shrink-0"
+      ><img
+        [alt]="product().title"
+        class="w-full h-full object-contain p-2"
+        [src]="product().imageCover"
+    /></a>
+    <div class="min-w-0">
+      <a [routerLink]="['/details', product().slug, product().id]"
+        class="font-medium text-gray-900 hover:text-primary-600 transition-colors line-clamp-2"
+        >{{ product().title }}</a
+      >
+      <p class="text-sm text-gray-400 mt-1">{{ product().category.name }}</p>
+    </div>
+  </div>
+  <div class="md:col-span-2 flex md:justify-center items-center gap-2">
+    <span class="md:hidden text-sm text-gray-500">Price:</span>
+    <div class="text-right md:text-center">
+      @if (product().priceAfterDiscount) {
+        <div class="font-semibold text-gray-900">
+          {{ product().priceAfterDiscount | number }} EGP
+        </div>
+        <div class="text-sm text-gray-400 line-through">{{ product().price | number }} EGP</div>
+      } @else {
+        <div class="font-semibold text-gray-900">{{ product().price | number }} EGP</div>
+      }
+    </div>
+  </div>
+  <div class="md:col-span-2 flex md:justify-center">
+    <span class="md:hidden text-sm text-gray-500 mr-2">Status:</span>
+    <span
+      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700"
+    >
+      @if (isInCart() || isAddedToCart()) {
+        <span
+          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-700"
+          ><svg
+            data-prefix="fas"
+            data-icon="cart-shopping"
+            class="svg-inline--fa fa-cart-shopping text-[10px]"
+            role="img"
+            viewBox="0 0 640 512"
+            aria-hidden="true"
+          >
+            <path
+              fill="currentColor"
+              d="M24-16C10.7-16 0-5.3 0 8S10.7 32 24 32l45.3 0c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3c6.2 34.2 36 59.1 70.8 59.1L456 384c13.3 0 24-10.7 24-24s-10.7-24-24-24l-255.9 0c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3 303.6 0c30.8 0 57.2-21.9 62.9-52.2L568.9 69.9C572.6 50.2 557.5 32 537.4 32l-412.7 0-.4-2c-4.8-26.6-28-46-55.1-46L24-16zM208 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"
+            ></path></svg
+          >In Cart</span
+        >
+      } @else {
+        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>In Stock
+      }
+    </span>
+  </div>
+  <div class="md:col-span-2 flex items-center gap-2 md:justify-center">
+    @if (isInCart() || isAddedToCart()) {
+      <a
+        class="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all"
+        routerLink="/cart"
+        ><svg
+          data-prefix="fas"
+          data-icon="check"
+          class="svg-inline--fa fa-check text-xs text-green-600"
+          role="img"
+          viewBox="0 0 448 512"
+          aria-hidden="true"
+        >
+          <path
+            fill="currentColor"
+            d="M434.8 70.1c14.3 10.4 17.5 30.4 7.1 44.7l-256 352c-5.5 7.6-14 12.3-23.4 13.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l101.5 101.5 234-321.7c10.4-14.3 30.4-17.5 44.7-7.1z"
+          ></path></svg
+        ><span class="md:hidden lg:inline">View Cart</span></a
+      >
+    } @else {
+      <button
+        (click)="addToCart(product())"
+        class="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50"
+        [disabled]="loadingAddedtoCart()"
+      >
+        @if (loadingAddedtoCart()) {
+      <i class="fa-solid fa-spinner animate-spin"></i>
+
+        }@else {
+          <svg
+          data-prefix="fas"
+          data-icon="cart-shopping"
+          class="svg-inline--fa fa-cart-shopping text-xs"
+          role="img"
+          viewBox="0 0 640 512"
+          aria-hidden="true"
+        >
+          <path
+            fill="currentColor"
+            d="M24-16C10.7-16 0-5.3 0 8S10.7 32 24 32l45.3 0c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3c6.2 34.2 36 59.1 70.8 59.1L456 384c13.3 0 24-10.7 24-24s-10.7-24-24-24l-255.9 0c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3 303.6 0c30.8 0 57.2-21.9 62.9-52.2L568.9 69.9C572.6 50.2 557.5 32 537.4 32l-412.7 0-.4-2c-4.8-26.6-28-46-55.1-46L24-16zM208 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"
+          ></path></svg
+        ><span class="md:hidden lg:inline">Add to Cart</span>
+        }
+      </button>
+    }
+    <button (click)="removeFromFavorite()"
+      class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all disabled:opacity-50"
+      title="Remove"
+      [disabled]="favoriteloading()"
+    >
+    @if (favoriteloading()) {
+      <i class="fa-solid fa-spinner animate-spin text-red-600"></i>
+    }@else {
+      <svg
+        data-prefix="fas"
+        data-icon="trash"
+        class="svg-inline--fa fa-trash text-sm"
+        role="img"
+        viewBox="0 0 448 512"
+        aria-hidden="true"
+      >
+        <path
+          fill="currentColor"
+          d="M136.7 5.9L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-8.7-26.1C306.9-7.2 294.7-16 280.9-16L167.1-16c-13.8 0-26 8.8-30.4 21.9zM416 144L32 144 53.1 467.1C54.7 492.4 75.7 512 101 512L347 512c25.3 0 46.3-19.6 47.9-44.9L416 144z"
+        ></path>
+      </svg>
+    }
+      
+    </button>
+  </div>
+</div>
