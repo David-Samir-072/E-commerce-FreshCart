@@ -13,7 +13,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   if (isPlatformBrowser(pLATFORM_ID)) {
     return next(req).pipe(catchError((err) => {
-      if (err.error.message==="Invalid Token. please login again") {
+      if (err.error.message === "Invalid Token. please login again" || err.error.message === "User recently changed password! Please login again.") {
         authService.logOut()
       }
       toastr.error(err.error.message, '', { progressBar: true, closeButton: true })
