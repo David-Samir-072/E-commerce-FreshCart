@@ -9,8 +9,8 @@ import { environment } from '../../../environments/environment';
 export class ProductsService {
   private readonly httpClient= inject(HttpClient)
 
-  getAllProducts(pageNumber:number=1):Observable<any>{
-    return this.httpClient.get(`${environment.baseUrl}/api/v1/products?page=${pageNumber}`)
+  getAllProducts(pageNumber:number=1,limit:number=40):Observable<any>{
+    return this.httpClient.get(`${environment.baseUrl}/api/v1/products?page=${pageNumber}&limit=${limit}`)
   }
   getBrandProducts(brandId:string,pageNumber:number=1):Observable<any>{
     return this.httpClient.get(`${environment.baseUrl}/api/v1/products?brand=${brandId}&page=${pageNumber}`)

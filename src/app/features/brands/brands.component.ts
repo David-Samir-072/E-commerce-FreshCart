@@ -38,7 +38,7 @@ export class BrandsComponent implements OnInit {
 
   getAllBrandsData(pageNumber:number|string) {
     this.loadingPage.set(true)
-    this.brandService.getAllBrands(+pageNumber).subscribe({
+    this.brandService.getAllBrands(+pageNumber,18).subscribe({
       next: res => {
         this.brandsList.set(res.data)
         this.pageSize.set(res.metadata.limit)

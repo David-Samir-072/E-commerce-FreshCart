@@ -10,9 +10,9 @@ export class BrandService {
 
   private readonly httpClient=inject(HttpClient)
 
-  getAllBrands(pageNumber:number=1):Observable<any>
+  getAllBrands(pageNumber:number=1,limit=50):Observable<any>
   {
-    return this.httpClient.get(`${environment.baseUrl}/api/v1/brands?page=${pageNumber}`)
+    return this.httpClient.get(`${environment.baseUrl}/api/v1/brands?page=${pageNumber}&limit=${limit}`)
   }
   getSpecificBrand(brandId:string):Observable<any>
   {

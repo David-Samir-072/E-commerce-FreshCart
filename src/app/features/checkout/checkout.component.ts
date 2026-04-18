@@ -5,6 +5,7 @@ import { LoadingPageComponent } from "../../shared/ui/loading-page/loading-page.
 import { Router, RouterLink } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
+import { WishListService } from '../../core/services/wish-list.service';
 
 @Component({
   selector: 'app-checkout',
@@ -67,6 +68,7 @@ export class CheckoutComponent {
       this.cartService.createCashOrder(this.loggedUsercartId(),this.checkoutForm.value).subscribe({
         next:res=>{
           if (res.status==='success') {
+            this.cartService.numOfCartItems.set(0)
             this.router.navigate(['/allorders'])
           }
         }

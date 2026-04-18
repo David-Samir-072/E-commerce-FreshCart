@@ -72,7 +72,7 @@ export class ShopComponent {
   getAllProductsData(pageNumber: number | string) {
     this.loadingPage.set(true);
 
-    this.productsService.getAllProducts(+pageNumber).subscribe({
+    this.productsService.getAllProducts(+pageNumber,15).subscribe({
       next: res => {
         this.productsList.set(res.data)
         this.pageSize.set(res.metadata.limit)
