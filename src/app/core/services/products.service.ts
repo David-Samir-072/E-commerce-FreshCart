@@ -25,4 +25,9 @@ export class ProductsService {
   getSpecificProduct(productId:string):Observable<any>{
     return this.httpClient.get(`${environment.baseUrl}/api/v1/products/${productId}`)
   }
+
+
+  searchProducts(queryParams:string):Observable<any>{
+    return this.httpClient.get(`${environment.baseUrl}/api/v1/products?${queryParams}&limit=12`)
+  }
 }

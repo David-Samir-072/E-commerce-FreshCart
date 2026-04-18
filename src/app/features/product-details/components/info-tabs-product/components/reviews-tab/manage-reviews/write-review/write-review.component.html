@@ -1,0 +1,123 @@
+<div class="flex items-center justify-center min-h-[420px]">
+  <div class="bg-white border border-gray-200 rounded-2xl p-8 w-full relative shadow-sm">
+    <!-- Top gradient bar -->
+    <div
+      class="absolute top-0 left-0 right-0 h-[3px] rounded-t-2xl bg-gradient-to-r from-indigo-400 to-emerald-500"
+    ></div>
+    <!-- FORM VIEW -->
+    <div id="form-view">
+      <div class="flex items-center justify-between mb-4">
+        @if (user().name) {
+          <div class="flex items-center gap-3">
+            @let arr = user().name.split(' ');
+            <div
+              class="w-10 h-10 rounded-full border border-primary-200 bg-primary-50 text-primary-600 text-sm font-medium flex items-center justify-center"
+            >
+              {{ arr.at(0)?.at(0) }}
+              {{ arr.at(1) ? arr.at(1)?.at(0) : '' }}
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">{{ user().name }}</p>
+            </div>
+          </div>
+        }
+        <!-- Tag -->
+        <div
+          class="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-400 rounded-full px-3 py-1 text-sm text-gray-800"
+        >
+          <i class="fa-solid fa-star text-xs text-yellow-400"></i>{{review()?'Update your review':' Write a review'}}
+        </div>
+      </div>
+
+      <!-- Rating -->
+      <span class="text-xs text-gray-500 mb-2 block">Your rating</span>
+
+      <div class="flex gap-1 text-2xl mb-1" id="stars">
+        @for (num of [1, 2, 3, 4, 5]; track num) {
+          @if (rating() - num >= 0) {
+            <i
+              (click)="rating.set(num)"
+              class="fa-solid fa-star cursor-pointer text-yellow-400"
+            ></i>
+          } @else if (num - rating() < 0.5) {
+            <i
+              (click)="rating.set(num)"
+              class="fa-solid fa-star-half-stroke cursor-pointer text-yellow-400"
+            ></i>
+          } @else {
+            <i
+              (click)="rating.set(num)"
+              class="fa-regular fa-star cursor-pointer text-gray-300"
+            ></i>
+          }
+        }
+      </div>
+      <hr class="border-gray-200 mb-5" />
+
+      <!-- Textarea -->
+      <span class="text-xs text-gray-500 mb-2 block">Your review</span>
+
+      <textarea
+        [ngModel]="reviewText()"
+        (ngModelChange)="reviewText.set($event)"
+        id="txt"
+        class="w-full min-h-27.5 resize-y rounded-lg px-3 py-2 text-sm bg-gray-50 border border-gray-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 outline-none"
+        placeholder="Write your review…"
+        maxlength="500"
+      ></textarea>
+
+      <div class="flex justify-between items-center mt-2 mb-5">
+        <span class="text-[11px] text-gray-400">Be honest, be helpful</span>
+        <span id="chars" class="text-[11px] text-gray-400">{{ reviewText().length }} / 500</span>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-2">
+        <button
+          (click)="cancel()"
+          id="cancel-btn"
+          class="border border-[#1f1e1d4d] disabled:opacity-40 disabled:cursor-not-allowed rounded-md px-4 py-2 text-sm text-[#141413] hover:bg-[#f5f4ed] active:scale-95 transition"
+          [disabled]="loading()"
+        >
+          Cancel
+        </button>
+
+        <button
+          (click)="submitReview()"
+          id="submit-btn"
+          class="bg-primary-500 text-white rounded-md px-5 py-2 text-sm font-medium flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary-600 active:scale-95 transition"
+          [disabled]="reviewText().length === 0 || rating() === 0 || loading()"
+        >
+          @if (loading()) {
+            Submitting review...
+          } @else {
+            → Submit review
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- SUCCESS VIEW -->
+    <div id="success-view" class="hidden flex-col items-center text-center gap-3 py-4">
+      <div
+        class="w-14 h-14 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center"
+      >
+        <span class="text-emerald-600 text-xl">✔</span>
+      </div>
+
+      <div>
+        <h2 class="text-base font-medium">Review submitted!</h2>
+        <p class="text-sm text-gray-500">Thanks for sharing your experience.</p>
+      </div>
+
+      <div id="s-stars" class="flex gap-1 text-lg"></div>
+
+      <button
+        onclick="reset()"
+        class="border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-500 hover:bg-gray-50"
+      >
+        Write another
+      </button>
+    </div>
+  </div>
+</div>

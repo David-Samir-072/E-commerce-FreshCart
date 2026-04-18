@@ -1,27 +1,41 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductsService } from '../../core/services/products.service';
 import { NavProductComponent } from "./components/nav-product/nav-product.component";
 import { InfoProductComponent } from "./components/info-product/info-product.component";
 import { LoadingProductDetailsComponent } from "./components/loading-product-details/loading-product-details.component";
+import { InfoTabsProductComponent } from "./components/info-tabs-product/info-tabs-product.component";
+import { SimilarProductsComponent } from "./components/similar-products/similar-products.component";
+import { CommunicationService } from '../../core/services/communication.service';
 
 @Component({
   selector: 'app-product-details',
-  imports: [NavProductComponent, InfoProductComponent, LoadingProductDetailsComponent],
+  imports: [NavProductComponent, InfoProductComponent, LoadingProductDetailsComponent, InfoTabsProductComponent, SimilarProductsComponent],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css',
 })
 export class ProductDetailsComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute)
   private readonly productsService = inject(ProductsService)
-  product=signal<Iproduct>({} as Iproduct)
-  loading=signal<boolean>(true)
+  private readonly communicationService = inject(CommunicationService)
+  product = signal<IdetailedProduct>({} as IdetailedProduct)
+  loading = signal<boolean>(true)
+  productId = signal<string>('')
+
+  constructor() {
+    effect(() => {
+      if (this.communicationService.trigger() > 0) {
+        this.getSpecificProductData(this.productId())        
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.loading.set(true);
     this.activatedRoute.paramMap.subscribe(
       (params) => {
-        this.getSpecificProductData(params.get('id')!)
+        this.productId.set(params.get('id')!)
+        this.getSpecificProductData(this.productId())
       }
     )
   }
@@ -31,6 +45,7 @@ export class ProductDetailsComponent implements OnInit {
       next: res => {
         this.product.set(res.data);
         this.loading.set(false);
+
       }
     })
 

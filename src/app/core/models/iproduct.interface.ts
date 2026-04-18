@@ -2,6 +2,11 @@ interface IlocalProduct extends Iproduct{
   count:number
 }
 
+interface IdetailedProduct extends Iproduct{
+    __v: number;
+  reviews: Review[];
+}
+
 
 interface Iproduct {
   sold: number;
@@ -37,4 +42,21 @@ interface Subcategory {
   name: string;
   slug: string;
   category: string;
+}
+
+
+interface Review {
+  _id: string;
+  rating: number;
+  review: string;
+  product: string;
+  user: User;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface User {
+  _id: string;
+  name: string;
 }

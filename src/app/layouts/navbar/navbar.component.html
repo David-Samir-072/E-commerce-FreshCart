@@ -165,15 +165,18 @@
             style="color: transparent"
             src="/assets/fresh-logo.svg"
         /></a>
-        <form class="hidden lg:flex flex-1 max-w-2xl">
+        <div
+        class="hidden lg:flex flex-1 max-w-2xl">
           <div class="relative w-full">
-            <input
+            <input (keyup.enter)="routeToSearch()"
+            (ngModelChange)="searchValue.set($event)"
+                    [ngModel]="searchValue()"
               type="text"
               placeholder="Search for products, brands and more..."
               class="w-full px-5 py-3 pr-12 rounded-full border border-gray-200 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-sm"
               value=""
-            /><button
-              type="submit"
+            /><button (click)="routeToSearch()"
+              type="button"
               class="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-primary-600 text-white flex items-center justify-center hover:bg-primary-700 transition-colors"
             >
               <svg
@@ -191,7 +194,7 @@
               </svg>
             </button>
           </div>
-        </form>
+        </div>
         <nav class="hidden xl:flex items-center gap-6">
           <a
             routerLink="/"
@@ -395,7 +398,7 @@
                 ><svg
                   data-prefix="fas"
                   data-icon="box-open"
-                  class="svg-inline--fa fa-box-open w-4 text-gray-400"
+                  class="svg-inline--fa fa-box-open w-4 text-gray-400 hover:text-primary-600"
                   role="img"
                   viewBox="0 0 640 512"
                   aria-hidden="true"
@@ -412,7 +415,7 @@
                 ><svg
                   data-prefix="far"
                   data-icon="heart"
-                  class="svg-inline--fa fa-heart w-4 text-gray-400"
+                  class="svg-inline--fa fa-heart w-4 text-gray-400 hover:text-primary-600"
                   role="img"
                   viewBox="0 0 512 512"
                   aria-hidden="true"
@@ -423,13 +426,13 @@
                   ></path></svg
                 >My Wishlist</a
               ><a
-                href="/profile/addresses"
+                routerLink="/profile/addresses"
                 (click)="closeDropdown()"
                 class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors"
                 ><svg
                   data-prefix="far"
                   data-icon="address-book"
-                  class="svg-inline--fa fa-address-book w-4 text-gray-400"
+                  class="svg-inline--fa fa-address-book w-4 text-gray-400 hover:text-primary-600"
                   role="img"
                   viewBox="0 0 512 512"
                   aria-hidden="true"
@@ -439,14 +442,23 @@
                     d="M384 48c8.8 0 16 7.2 16 16l0 384c0 8.8-7.2 16-16 16L96 464c-8.8 0-16-7.2-16-16L80 64c0-8.8 7.2-16 16-16l288 0zM96 0C60.7 0 32 28.7 32 64l0 384c0 35.3 28.7 64 64 64l288 0c35.3 0 64-28.7 64-64l0-384c0-35.3-28.7-64-64-64L96 0zM240 248a56 56 0 1 0 0-112 56 56 0 1 0 0 112zm-32 40c-44.2 0-80 35.8-80 80 0 8.8 7.2 16 16 16l192 0c8.8 0 16-7.2 16-16 0-44.2-35.8-80-80-80l-64 0zM512 80c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 64c0 8.8 7.2 16 16 16s16-7.2 16-16l0-64zM496 192c-8.8 0-16 7.2-16 16l0 64c0 8.8 7.2 16 16 16s16-7.2 16-16l0-64c0-8.8-7.2-16-16-16zm16 144c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 64c0 8.8 7.2 16 16 16s16-7.2 16-16l0-64z"
                   ></path></svg
                 >Addresses</a
-              ><a
-                href="/profile/settings"
+              >
+              <a
+                routerLink="/profile/profile-information"
+                (click)="closeDropdown()"
+                class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors"
+                >
+                <i class="fa-solid fa-user text-sm text-gray-400 hover:text-primary-600"></i>
+                Profile Information</a
+              >
+              <a
+                routerLink="/profile/change-password"
                 (click)="closeDropdown()"
                 class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors"
                 ><svg
                   data-prefix="fas"
                   data-icon="gear"
-                  class="svg-inline--fa fa-gear w-4 text-gray-400"
+                  class="svg-inline--fa fa-gear w-4 text-gray-400 hover:text-primary-600"
                   role="img"
                   viewBox="0 0 512 512"
                   aria-hidden="true"
@@ -455,7 +467,7 @@
                     fill="currentColor"
                     d="M195.1 9.5C198.1-5.3 211.2-16 226.4-16l59.8 0c15.2 0 28.3 10.7 31.3 25.5L332 79.5c14.1 6 27.3 13.7 39.3 22.8l67.8-22.5c14.4-4.8 30.2 1.2 37.8 14.4l29.9 51.8c7.6 13.2 4.9 29.8-6.5 39.9L447 233.3c.9 7.4 1.3 15 1.3 22.7s-.5 15.3-1.3 22.7l53.4 47.5c11.4 10.1 14 26.8 6.5 39.9l-29.9 51.8c-7.6 13.1-23.4 19.2-37.8 14.4l-67.8-22.5c-12.1 9.1-25.3 16.7-39.3 22.8l-14.4 69.9c-3.1 14.9-16.2 25.5-31.3 25.5l-59.8 0c-15.2 0-28.3-10.7-31.3-25.5l-14.4-69.9c-14.1-6-27.2-13.7-39.3-22.8L73.5 432.3c-14.4 4.8-30.2-1.2-37.8-14.4L5.8 366.1c-7.6-13.2-4.9-29.8 6.5-39.9l53.4-47.5c-.9-7.4-1.3-15-1.3-22.7s.5-15.3 1.3-22.7L12.3 185.8c-11.4-10.1-14-26.8-6.5-39.9L35.7 94.1c7.6-13.2 23.4-19.2 37.8-14.4l67.8 22.5c12.1-9.1 25.3-16.7 39.3-22.8L195.1 9.5zM256.3 336a80 80 0 1 0 -.6-160 80 80 0 1 0 .6 160z"
                   ></path></svg
-                >Settings</a
+                >Change Password</a
               >
             </div>
             <div class="border-t border-gray-100 py-2">
@@ -479,8 +491,9 @@
               </button>
             </div>
           </div>
-          @if (!isLogged()) {
-            <a
+          @if (isLogged()) {
+          }@else {
+             <a
               routerLink="/login"
               routerLinkActive="text-primary"
               class="hidden lg:flex items-center gap-2 ml-2 px-5 py-2.5 rounded-full bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition-colors shadow-sm shadow-primary-600/20"
@@ -542,7 +555,7 @@
       class="h-8 w-auto"
       style="color: transparent"
       src="/assets/fresh-logo.svg"
-    /><button
+    /><button #closeBtn
       data-drawer-hide="drawer-right"
       class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
     >
@@ -561,15 +574,18 @@
       </svg>
     </button>
   </div>
-  <form class="p-4 border-b border-gray-100">
+  <div
+  class="p-4 border-b border-gray-100">
     <div class="relative">
-      <input
+      <input (keyup.enter)="routeToSearch();closeBtn.click()"
+              (ngModelChange)="searchValue.set($event)"
+              [ngModel]="searchValue()"
         type="text"
         placeholder="Search products..."
         class="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-sm"
         value=""
-      /><button
-        type="submit"
+      /><button (click)="routeToSearch()"
+        type="button"
         class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-primary-600 text-white flex items-center justify-center"
       >
         <svg
@@ -587,7 +603,7 @@
         </svg>
       </button>
     </div>
-  </form>
+  </div>
   <nav class="p-4">
     <div class="space-y-1">
       <a
@@ -599,6 +615,7 @@
         >Home</a
       ><a
         routerLink="/shop"
+      data-drawer-hide="drawer-right"
         routerLinkActive="text-primary"
         class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors"
         >Shop</a
@@ -622,7 +639,6 @@
     <a
       routerLink="/wishlist"
       routerLinkActive="text-primary"
-      data-drawer-hide="drawer-right"
       data-drawer-hide="drawer-right"
       class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-primary-50 transition-colors"
       >
@@ -682,6 +698,8 @@
     @if (isLogged()) {
       <a
         routerLink="/profile"
+      data-drawer-hide="drawer-right"
+
         class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-primary-50 transition-colors"
         ><div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
           <svg
@@ -701,6 +719,7 @@
         <span class="font-medium text-gray-700">{{ user().name }}</span></a
       ><button
         (click)="signOut()"
+      data-drawer-hide="drawer-right"
         class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 transition-colors w-full text-left"
       >
         <div class="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center">

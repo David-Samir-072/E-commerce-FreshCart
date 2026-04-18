@@ -26,7 +26,6 @@ export class ProductsHomeComponent implements OnInit {
         this.productsList.set(res.data)
       },
       error: err => {
-        console.log(err);
       }
     }
 

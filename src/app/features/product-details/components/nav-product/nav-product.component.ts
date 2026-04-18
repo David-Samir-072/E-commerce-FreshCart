@@ -8,6 +8,6 @@ import { RouterLink } from "@angular/router";
   styleUrl: './nav-product.component.css',
 })
 export class NavProductComponent {
-  product=input.required<Iproduct>();
+  product=input.required<IdetailedProduct>();
 
 }

@@ -1,17 +1,19 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FlowbiteService } from '../../core/services/flowbite.service';
 import { Dropdown, initFlowbite } from 'flowbite';
-import { RouterLink, RouterLinkActive } from "@angular/router";
+import { Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { AuthService } from '../../core/auth/services/auth.service';
 import { MystorageService } from '../../core/services/mystorage.service';
 import { CartService } from '../../core/services/cart.service';
 import { WishListService } from '../../core/services/wish-list.service';
 import { CartInLocalStorageService } from '../../core/services/cart-in-local-storage.service';
 import { CategoriesService } from '../../core/services/categories.service';
+import { FormsModule } from '@angular/forms';
+import { GuestWishListService } from '../../core/services/guest-wish-list.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, FormsModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
@@ -22,10 +24,13 @@ export class NavbarComponent implements OnInit {
   private readonly cartService = inject(CartService)
   private readonly categoriesService = inject(CategoriesService)
   private readonly wishListService = inject(WishListService)
+  private readonly router = inject(Router)
+  private readonly cartInLocalStorageService = inject(CartInLocalStorageService)
+  private readonly guestWishListService = inject(GuestWishListService)
   loadingCategories = signal<boolean>(false)
+  searchValue = signal<string>('')
   categoriesList = signal<Icategory[]>([])
 
-  private readonly cartInLocalStorageService = inject(CartInLocalStorageService)
 
   isLogged = computed<boolean>(() => this.authService.isLogged())
   favorateItemsCount = computed<number>(() => this.wishListService.wishListIds().length)
@@ -37,18 +42,16 @@ export class NavbarComponent implements OnInit {
     }
   })
 
-  user = computed<Iuser>(() => {
-    if (this.isLogged()) {
-      return JSON.parse(this.mystorageService.getUserObject()!)
-    } else {
-      return {} as Iuser
-    }
-  })
+  user = computed<Iuser>(() => this.authService.user())
 
   ngOnInit(): void {
     this.flowbiteService.loadFlowbite((flowbite) => {
       initFlowbite();
     });
+    this.verifyToken()
+    if (this.mystorageService.getUserObject()) {
+      this.authService.user.set(JSON.parse(this.mystorageService.getUserObject()!))
+    }
 
     this.getNumOfCartItems();
     this.getAllCategoriesData();
@@ -109,16 +112,28 @@ export class NavbarComponent implements OnInit {
           wishList.set(res.data)
           if (wishList().length) {
             this.wishListService.wishListIds.set(wishList().map((item) => item._id))
-            console.log(this.wishListService.wishListIds());
-            console.log(this.favorateItemsCount());
-            
+
           }
         }
       })
+    }else{
+      this.wishListService.wishListIds.set(this.guestWishListService.getWishListIds())
     }
 
   }
 
+  routeToSearch() {
+    if (this.searchValue() === '') return
+    this.router.navigate(['/search'], { queryParams: { q: this.searchValue() } })
+    this.searchValue.set('')
+
+  }
+
+  verifyToken() {
+    if (this.mystorageService.getToken()) {
+      this.authService.verifyToken().subscribe()
+    }
+  }
 
 
 

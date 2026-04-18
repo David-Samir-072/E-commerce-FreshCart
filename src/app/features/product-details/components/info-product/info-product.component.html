@@ -202,7 +202,7 @@
           <div class="flex gap-3 mb-6">
             @let isInFavorate = wishListIds().includes(product().id);
             <button
-              (click)="toggelFavorite(product().id)"
+              (click)="toggleFavorite(product().id)"
               id="wishlist-button"
               [class]="
                 isInFavorate

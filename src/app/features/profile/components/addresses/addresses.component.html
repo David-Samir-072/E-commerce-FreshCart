@@ -1,0 +1,58 @@
+<main class="flex-1 min-w-0">
+  <div>
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-xl font-bold text-gray-900">My Addresses</h2>
+        <p class="text-gray-500 text-sm mt-1">Manage your saved delivery addresses</p>
+      </div>
+      <button
+        (click)="openModal.set(true);isModalAdd.set(true)"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors shadow-lg shadow-primary-600/25"
+      >
+        <svg
+          data-prefix="fas"
+          data-icon="plus"
+          class="svg-inline--fa fa-plus text-sm"
+          role="img"
+          viewBox="0 0 448 512"
+          aria-hidden="true"
+        >
+          <path
+            fill="currentColor"
+            d="M256 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 160-160 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l160 0 0 160c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160 160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-160 0 0-160z"
+          ></path></svg
+        >Add Address
+      </button>
+    </div>
+
+    @if (loadingAdresses()) {
+      <app-loading-page [loadingTitle]="'Loading addresses'"></app-loading-page>
+    } @else if (AddressesList().length) {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        @for (address of AddressesList(); track address._id) {
+
+          <app-item-address 
+          (addressesList)="AddressesList.set($event)"
+          
+          (AddressToUpdate)="AddressToUpdate.set($event)"
+          (isModalAdd)="isModalAdd.set($event)"
+          (openModal)="openModal.set($event)"
+          [address]="address"></app-item-address>
+        }
+      </div>
+    } @else {
+      <app-empty-addresses (isModalAdd)="isModalAdd.set($event)"  (openModal)="openModal.set($event)"></app-empty-addresses>
+    }
+
+    @defer (when openModal()) {
+      @if (openModal()) {
+        <app-addresses-modal
+          (AddressesList)="AddressesList.set($event)"
+          (openModal)="openModal.set(false)"
+          [AddressToUpdate]="AddressToUpdate()"
+          [isModalAdd]="isModalAdd()"
+        ></app-addresses-modal>
+      }
+    }
+  </div>
+</main>

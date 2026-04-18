@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../core/auth/services/auth.service';
 import { CartService } from '../../../../core/services/cart.service';
 import { CartInLocalStorageService } from '../../../../core/services/cart-in-local-storage.service';
+import { GuestWishListService } from '../../../../core/services/guest-wish-list.service';
 
 @Component({
   selector: 'app-favorate-item',
@@ -23,6 +24,7 @@ export class FavorateItemComponent {
     private readonly authService = inject(AuthService)
     private readonly cartService = inject(CartService)
     private readonly cartInLocalStorageService = inject(CartInLocalStorageService)
+    private readonly guestWishListService = inject(GuestWishListService)
   
   private readonly wishListService = inject(WishListService)
   isLogged = computed(() => this.authService.isLogged());
@@ -30,7 +32,7 @@ export class FavorateItemComponent {
 
   removeFromFavorite() {
 
-    if (this.isLogged()) {
+  if (this.isLogged()) {
     
     if (this.favoriteloading()) return
 
@@ -45,8 +47,11 @@ export class FavorateItemComponent {
         this.favoriteloading.set(false)
       }
     })
-
+  }else{
+        this.wishListService.wishListIds.set(this.guestWishListService.removeFromWishList(this.product()))
+        this.getList.emit()
   }
+
   }
 
 
@@ -69,6 +74,8 @@ export class FavorateItemComponent {
 
     } else {
       this.cartInLocalStorageService.addToCart(product)
+          this.isAddedToCart.set(true)
+
     }
 
   }

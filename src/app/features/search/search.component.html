@@ -1,0 +1,562 @@
+<div class="min-h-screen bg-gray-50/50">
+  <div class="bg-white border-b border-gray-100">
+    <div class="container mx-auto px-4 py-6">
+      <nav class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+        <a class="hover:text-primary-600 transition-colors" href="/">Home</a
+        ><span class="text-gray-300">/</span
+        ><span class="text-gray-900 font-medium">Search Results</span>
+      </nav>
+      <div class="max-w-2xl">
+        <div class="relative">
+          <svg
+            data-prefix="fas"
+            data-icon="magnifying-glass"
+            class="svg-inline--fa fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            role="img"
+            viewBox="0 0 512 512"
+            aria-hidden="true"
+          >
+            <path
+              fill="currentColor"
+              d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376C296.3 401.1 253.9 416 208 416 93.1 416 0 322.9 0 208S93.1 0 208 0 416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+            ></path></svg
+          ><input (ngModelChange)="searchValue.set($event);minMaxSort('q',$event)"
+                [ngModel]="searchValue()"
+            type="text"
+            placeholder="Search for products..."
+            class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all text-lg"
+            value=""
+          />
+        </div>
+      </div>
+      @if (searchValue()) {
+        <h1 class="mt-4 text-2xl font-bold text-gray-900">
+          Search Results for "{{ searchValue() }}"
+        </h1>
+      }
+    </div>
+  </div>
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex gap-8">
+      <aside class="hidden lg:block w-64 shrink-0">
+        <div class="bg-white rounded-2xl border border-gray-100 p-6 sticky top-24">
+          <div class="space-y-6">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-gray-900">Categories</h3>
+                @let catCount = searchedinfo().filter(item=>item.key==='category') ;
+                @if (catCount.length) {
+                  <span class="text-xs text-primary-600 font-medium"
+                    >{{ catCount.length }} selected</span
+                  >
+                }
+              </div>
+
+              <div class="space-y-2 max-h-52 overflow-y-auto">
+                @for (cat of categoriesList(); track cat._id) {
+                  <label class="flex items-center gap-3 cursor-pointer group"
+                    ><input
+                      [checked]="searchedinfo().find(item=>item.value===cat._id)"
+                      (change)="
+                        checkboxSearch('category', cat._id, $event.target.checked, cat.name)
+                      "
+                      class="w-4 h-4 font-bold cursor-pointer border-gray-300 text-primary-600 focus:ring-primary-500"
+                      type="checkbox"
+                    /><span
+                      class="text-sm text-gray-600 group-hover:text-gray-900 transition-colors"
+                      >{{ cat.name }}</span
+                    ></label
+                  >
+                }
+              </div>
+            </div>
+            <hr class="border-gray-100" />
+            <div>
+              <h3 class="font-bold text-gray-900 mb-4">Price Range</h3>
+              <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label class="text-xs text-gray-500 mb-1 block">Min (EGP)</label
+                  ><input
+                    (ngModelChange)="min.set($event)"
+                    [ngModel]="min()"
+                    (keyup.enter)="minMaxSort('minPrice', min())"
+                    placeholder="0"
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none"
+                    type="number"
+                    value=""
+                  />
+                </div>
+                <div>
+                  <label class="text-xs text-gray-500 mb-1 block">Max (EGP)</label
+                  ><input
+                    (ngModelChange)="max.set($event)"
+                    [ngModel]="max()"
+                    (keyup.enter)="minMaxSort('maxPrice', max())"
+                    placeholder="No limit"
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none"
+                    type="number"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  (click)="minMaxSort('maxPrice', 500)"
+                  [class]="
+                    max() === 500
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  "
+                  class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+                >
+                  Under 500</button
+                ><button
+                  (click)="minMaxSort('maxPrice', 1000)"
+                  [class]="
+                    max() === 1000
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  "
+                  class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+                >
+                  Under 1K</button
+                ><button
+                  (click)="minMaxSort('maxPrice', 5000)"
+                  [class]="
+                    max() === 5000
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  "
+                  class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+                >
+                  Under 5K</button
+                ><button
+                  (click)="minMaxSort('maxPrice', '10000')"
+                  [class]="
+                    max() === 10000
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  "
+                  class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+                >
+                  Under 10K
+                </button>
+              </div>
+            </div>
+            <hr class="border-gray-100" />
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-gray-900">Brands</h3>
+              </div>
+              <div class="space-y-2 max-h-52 overflow-y-auto">
+                @for (brand of brandsList(); track brand._id) {
+                  <label class="flex items-center gap-3 cursor-pointer group"
+                    ><input
+                      [checked]="searchedinfo().find(item=>item.value===brand._id)"
+                      (change)="
+                        checkboxSearch('brand', brand._id, $event.target.checked, brand.name)
+                      "
+                      class="w-4 h-4 font-bold cursor-pointer border-gray-300 text-primary-600 focus:ring-primary-500"
+                      type="checkbox"
+                    /><span
+                      class="text-sm text-gray-600 group-hover:text-gray-900 transition-colors"
+                      >{{ brand.name }}</span
+                    ></label
+                  >
+                }
+              </div>
+            </div>
+            <hr class="border-gray-100" />
+            <button
+              (click)="clearAll()"
+              class="w-full py-2.5 rounded-lg border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 hover:border-gray-300 transition-colors"
+            >
+              Clear All Filters
+            </button>
+          </div>
+        </div>
+      </aside>
+      <main class="flex-1 min-w-0">
+        <div class="flex items-center justify-between mb-5 gap-4 flex-wrap">
+          <div class="flex items-center gap-4">
+            <button
+              data-drawer-target="filters-drawer-right"
+              data-drawer-show="filters-drawer-right"
+              data-drawer-placement="right"
+              class="lg:hidden flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
+              <svg
+                data-prefix="fas"
+                data-icon="sliders"
+                class="svg-inline--fa fa-sliders"
+                role="img"
+                viewBox="0 0 512 512"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 224zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384z"
+                ></path></svg
+              >Filters
+            </button>
+            <div class="flex items-center gap-1 bg-white rounded-lg border border-gray-200 p-1">
+              <button
+                (click)="isGrid.set(true)"
+                [class]="
+                  isGrid() ? 'bg-primary-600 text-white' : 'text-gray-500 hover:text-gray-700'
+                "
+                class="p-2 rounded-md transition-colors"
+              >
+                <svg
+                  data-prefix="fas"
+                  data-icon="grip-vertical"
+                  class="svg-inline--fa fa-grip-vertical"
+                  role="img"
+                  viewBox="0 0 320 512"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M128 40c0-22.1-17.9-40-40-40L40 0C17.9 0 0 17.9 0 40L0 88c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48zm0 192c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48zM0 424l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40zM320 40c0-22.1-17.9-40-40-40L232 0c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48zM192 232l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40zM320 424c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48z"
+                  ></path>
+                </svg>
+              </button>
+              <button
+                (click)="isGrid.set(false)"
+                [class]="
+                  isGrid() === false
+                    ? 'bg-primary-600 text-white'
+                    : 'text-gray-500 hover:text-gray-700'
+                "
+                class="p-2 rounded-md transition-colors"
+              >
+                <svg
+                  data-prefix="fas"
+                  data-icon="list"
+                  class="svg-inline--fa fa-list"
+                  role="img"
+                  viewBox="0 0 512 512"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M40 48C26.7 48 16 58.7 16 72l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24L40 48zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L192 64zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zM16 232l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="ms-3 text-sm text-gray-500">
+              {{ productsList().length }} result out of {{ total() }}
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-gray-500">Sort by:</span
+            ><select
+              [ngModel]="sortBy()"
+              (ngModelChange)="sortBy.set($event); minMaxSort('sort', $event)"
+              class="px-3 py-2 rounded-lg border border-gray-200 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none bg-white"
+            >
+              <option value="" selected="">Relevance</option>
+              <option value="price">Price: Low to High</option>
+              <option value="-price">Price: High to Low</option>
+              <option value="-ratingsAverage">Rating: High to Low</option>
+              <option value="title">Name: A to Z</option>
+              <option value="-title">Name: Z to A</option>
+            </select>
+          </div>
+        </div>
+        @if (searchValue() ||searchedinfo().length||displaymin() || displaymax() ) {
+          <div class="mb-6 flex items-center gap-2 flex-wrap">
+            <span class="text-sm text-gray-500 flex items-center gap-1"
+              ><svg
+                data-prefix="fas"
+                data-icon="filter"
+                class="svg-inline--fa fa-filter text-xs"
+                role="img"
+                viewBox="0 0 512 512"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M32 64C19.1 64 7.4 71.8 2.4 83.8S.2 109.5 9.4 118.6L192 301.3 192 416c0 8.5 3.4 16.6 9.4 22.6l64 64c9.2 9.2 22.9 11.9 34.9 6.9S320 492.9 320 480l0-178.7 182.6-182.6c9.2-9.2 11.9-22.9 6.9-34.9S492.9 64 480 64L32 64z"
+                ></path></svg
+              >Active:</span
+            >
+            @if (searchValue()) {
+              <span
+                class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 text-gray-700 text-xs"
+                >"{{searchValue()}}"<button (click)="minMaxSort('q','')" class="hover:text-red-500">
+                  <svg
+                    data-prefix="fas"
+                    data-icon="xmark"
+                    class="svg-inline--fa fa-xmark"
+                    role="img"
+                    viewBox="0 0 384 512"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
+                    ></path>
+                  </svg></button
+              ></span>
+            }
+            @for (item of searchedinfo(); track item.value) {
+              <span
+                [class]="item.key === 'category' ? 'text-primary-700' : 'text-violet-700'"
+                class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary-100 text-xs"
+                >{{ item.name }}
+                <button
+                  (click)="checkboxSearch(item.key,item.value,false)"
+                  class="hover:text-red-500"
+                >
+                  <svg
+                    data-prefix="fas"
+                    data-icon="xmark"
+                    class="svg-inline--fa fa-xmark"
+                    role="img"
+                    viewBox="0 0 384 512"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
+                    ></path>
+                  </svg></button
+              ></span>
+            }
+            @if (displaymin() || displaymax()) {
+              <span
+                class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-xs"
+                >{{ displaymin() }} - {{ displaymax() === 0 ? '∞' : displaymax() }} EGP<button
+                  (click)="clearMinMax()"
+                  class="hover:text-red-500"
+                >
+                  <svg
+                    data-prefix="fas"
+                    data-icon="xmark"
+                    class="svg-inline--fa fa-xmark"
+                    role="img"
+                    viewBox="0 0 384 512"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
+                    ></path>
+                  </svg></button
+              ></span>
+            }
+            <button
+              (click)="clearAll()"
+              class="text-xs text-gray-500 hover:text-gray-700 underline ml-2"
+            >
+              Clear all
+            </button>
+          </div>
+        }
+
+        @if (loadingProducts()) {
+          <app-loading-page [loadingTitle]="'Loading Products...'"></app-loading-page>
+        } @else if (productsList().length === 0) {
+          <app-empty-products></app-empty-products>
+        } @else {
+          <Div
+            [class]="isGrid() ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : ''"
+            class="grid gap-4"
+          >
+            @for (
+              product of productsList()
+                | paginate
+                  : {
+                      id: 'products',
+                      itemsPerPage: pageSize(),
+                      currentPage: cp(),
+                      totalItems: total(),
+                    };
+              track product._id
+            ) {
+              <app-item-product [product]="product"></app-item-product>
+            }
+          </Div>
+          <div class="flex items-center justify-center mt-7">
+            <pagination-controls
+              id="products"
+              (pageChange)="changePage($event)"
+              [maxSize]="5"
+              [directionLinks]="true"
+              [autoHide]="true"
+              [responsive]="true"
+              previousLabel="<"
+              nextLabel=">"
+              screenReaderPaginationLabel="Pagination"
+              screenReaderPageLabel="page"
+              screenReaderCurrentLabel="You're on page"
+            >
+            </pagination-controls>
+          </div>
+        }
+      </main>
+    </div>
+  </div>
+
+  <div
+    id="filters-drawer-right"
+    tabindex="-1"
+    class="fixed inset-0 z-50 lg:hidden translate-x-full"
+  >
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-80 bg-white p-6 overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-bold">Filters</h2>
+        <button
+          data-drawer-hide="filters-drawer-right"
+          class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"
+        >
+          <svg
+            data-prefix="fas"
+            data-icon="xmark"
+            class="svg-inline--fa fa-xmark"
+            role="img"
+            viewBox="0 0 384 512"
+            aria-hidden="true"
+          >
+            <path
+              fill="currentColor"
+              d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
+            ></path>
+          </svg>
+        </button>
+      </div>
+      <div class="space-y-6">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-gray-900">Categories</h3>
+            @let catCountsmall = searchedinfo().filter(item=>item.key==='category') ;
+            @if (catCountsmall.length) {
+              <span class="text-xs text-primary-600 font-medium"
+                >{{ catCountsmall.length }} selected</span
+              >
+            }
+          </div>
+
+          <div class="space-y-2 max-h-52 overflow-y-auto">
+            @for (cat of categoriesList(); track cat._id) {
+              <label class="flex items-center gap-3 cursor-pointer group"
+                ><input
+                  [checked]="searchedinfo().find(item=>item.value===cat._id)"
+                  (change)="checkboxSearch('category', cat._id, $event.target.checked, cat.name)"
+                  class="w-4 h-4 font-bold cursor-pointer border-gray-300 text-primary-600 focus:ring-primary-500"
+                  type="checkbox"
+                /><span class="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">{{
+                  cat.name
+                }}</span></label
+              >
+            }
+          </div>
+        </div>
+        <hr class="border-gray-100" />
+        <div>
+          <h3 class="font-bold text-gray-900 mb-4">Price Range</h3>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">Min (EGP)</label
+              ><input
+                (ngModelChange)="min.set($event)"
+                [ngModel]="min()"
+                (keyup.enter)="minMaxSort('minPrice', min())"
+                placeholder="0"
+                class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none"
+                type="number"
+                value=""
+              />
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">Max (EGP)</label
+              ><input
+                (ngModelChange)="max.set($event)"
+                [ngModel]="max()"
+                (keyup.enter)="minMaxSort('maxPrice', max())"
+                placeholder="No limit"
+                class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none"
+                type="number"
+                value=""
+              />
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button
+              (click)="minMaxSort('maxPrice', 500)"
+              [class]="
+                max() === 500
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              "
+              class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+            >
+              Under 500</button
+            ><button
+              (click)="minMaxSort('maxPrice', 1000)"
+              [class]="
+                max() === 1000
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              "
+              class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+            >
+              Under 1K</button
+            ><button
+              (click)="minMaxSort('maxPrice', 5000)"
+              [class]="
+                max() === 5000
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              "
+              class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+            >
+              Under 5K</button
+            ><button
+              (click)="minMaxSort('maxPrice', '10000')"
+              [class]="
+                max() === 10000
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              "
+              class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+            >
+              Under 10K
+            </button>
+          </div>
+        </div>
+        <hr class="border-gray-100" />
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-gray-900">Brands</h3>
+          </div>
+          <div class="space-y-2 max-h-52 overflow-y-auto">
+            @for (brand of brandsList(); track brand._id) {
+              <label class="flex items-center gap-3 cursor-pointer group"
+                ><input
+                  [checked]="searchedinfo().find(item=>item.value===brand._id)"
+                  (change)="checkboxSearch('brand', brand._id, $event.target.checked, brand.name)"
+                  class="w-4 h-4 font-bold cursor-pointer border-gray-300 text-primary-600 focus:ring-primary-500"
+                  type="checkbox"
+                /><span class="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">{{
+                  brand.name
+                }}</span></label
+              >
+            }
+          </div>
+        </div>
+        <hr class="border-gray-100" />
+        <button
+          (click)="clearAll()"
+          class="w-full py-2.5 rounded-lg border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 hover:border-gray-300 transition-colors"
+        >
+          Clear All Filters
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

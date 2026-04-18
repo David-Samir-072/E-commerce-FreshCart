@@ -10,6 +10,7 @@ import { CartInLocalStorageService } from '../../../../core/services/cart-in-loc
 import { WishListService } from '../../../../core/services/wish-list.service';
 import { RouterLink } from "@angular/router";
 import { MystorageService } from '../../../../core/services/mystorage.service';
+import { GuestWishListService } from '../../../../core/services/guest-wish-list.service';
 
 @Component({
   selector: 'app-info-product',
@@ -24,7 +25,8 @@ export class InfoProductComponent {
   private readonly toastrService = inject(ToastrService)
   private readonly wishListService = inject(WishListService)
   private readonly cartInLocalStorageService = inject(CartInLocalStorageService)
-  product = input.required<Iproduct>()
+  private readonly guestWishListService = inject(GuestWishListService)
+  product = input.required<IdetailedProduct>()
   value = signal<number>(1);
   isLogged = computed(() => this.authService.isLogged());
   loadingAddToCart = signal<boolean>(false);
@@ -99,15 +101,13 @@ export class InfoProductComponent {
   }
 
 
-  toggelFavorite(productId: string) {
+  toggleFavorite(productId: string) {
+    if (this.favoriteloading()) return
 
-
+    const isInList: boolean = this.wishListService.wishListIds().includes(productId)
     if (this.isLogged()) {
-
-      if (this.favoriteloading()) return
       this.favoriteloading.set(true)
-      // already in favorite
-      if (this.wishListService.wishListIds().includes(productId)) {
+      if (isInList) {
         this.wishListService.removeProductFromWishlist(productId).subscribe({
           next: res => {
             this.wishListService.wishListIds.set(res.data)
@@ -128,9 +128,13 @@ export class InfoProductComponent {
           }
         })
       }
+    } else {
+      if (isInList) {
+        this.wishListService.wishListIds.set(this.guestWishListService.removeFromWishList(this.product()))
+      } else {
+        this.wishListService.wishListIds.set(this.guestWishListService.addToWishList(this.product()))
+      }
     }
-
-
   }
 
 

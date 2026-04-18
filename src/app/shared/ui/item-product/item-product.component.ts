@@ -7,6 +7,7 @@ import { CartService } from '../../../core/services/cart.service';
 import { CartInLocalStorageService } from '../../../core/services/cart-in-local-storage.service';
 import { AuthService } from '../../../core/auth/services/auth.service';
 import { WishListService } from '../../../core/services/wish-list.service';
+import { GuestWishListService } from '../../../core/services/guest-wish-list.service';
 
 @Component({
   selector: 'app-item-product',
@@ -20,6 +21,7 @@ export class ItemProductComponent {
   private readonly wishListService = inject(WishListService)
   private readonly toastrService = inject(ToastrService)
   private readonly cartInLocalStorageService = inject(CartInLocalStorageService)
+  private readonly guestWishListService = inject(GuestWishListService)
   product = input.required<Iproduct>();
   isLogged = computed(() => this.authService.isLogged());
   showCheck = signal<boolean>(false);
@@ -59,14 +61,13 @@ export class ItemProductComponent {
   }
 
 
-  toggelFavorite(productId: string) {
+  toggleFavorite(productId: string) {
+    if (this.favoriteloading()) return
 
+    const isInList: boolean = this.wishListService.wishListIds().includes(productId)
     if (this.isLogged()) {
-      if (this.favoriteloading()) return
-
       this.favoriteloading.set(true)
-      // already in favorite
-      if (this.wishListService.wishListIds().includes(productId)) {
+      if (isInList) {
         this.wishListService.removeProductFromWishlist(productId).subscribe({
           next: res => {
             this.wishListService.wishListIds.set(res.data)
@@ -87,7 +88,12 @@ export class ItemProductComponent {
           }
         })
       }
-
+    } else {
+      if (isInList) {
+        this.wishListService.wishListIds.set(this.guestWishListService.removeFromWishList(this.product()))
+      } else {
+        this.wishListService.wishListIds.set(this.guestWishListService.addToWishList(this.product()))
+      }
     }
   }
 

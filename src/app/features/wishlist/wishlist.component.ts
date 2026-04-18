@@ -8,6 +8,7 @@ import { CartInLocalStorageService } from '../../core/services/cart-in-local-sto
 import { FavorateItemComponent } from "./components/favorate-item/favorate-item.component";
 import { LoadingPageComponent } from "../../shared/ui/loading-page/loading-page.component";
 import { EmptyWishListComponent } from "./components/empty-wish-list/empty-wish-list.component";
+import { GuestWishListService } from '../../core/services/guest-wish-list.service';
 
 @Component({
   selector: 'app-wishlist',
@@ -21,6 +22,7 @@ export class WishlistComponent implements OnInit {
   private readonly authService = inject(AuthService)
   private readonly cartService = inject(CartService)
   private readonly wishListService = inject(WishListService)
+  private readonly guestWishListService = inject(GuestWishListService)
   private readonly pLATFORM_ID = inject(PLATFORM_ID)
   cartDetails = signal<IcartProduct[]>([])
   isLogged = computed(() => this.authService.isLogged())
@@ -37,19 +39,23 @@ export class WishlistComponent implements OnInit {
   }
 
 
-
-
-
   getLoggedUserWishlistData() {
-    this.wishListService.getLoggedUserWishlist().subscribe({
-      next: res => {
-        this.wishList.set(res.data)
-        this.loadingPage1.set(false)
-      },
-      error: err => {
-        this.loadingPage1.set(false)
-      }
-    })
+    if (this.isLogged()) {
+      this.wishListService.getLoggedUserWishlist().subscribe({
+        next: res => {
+          this.wishList.set(res.data)
+          this.loadingPage1.set(false)
+        },
+        error: err => {
+          this.loadingPage1.set(false)
+        }
+      })
+
+    } else {
+      this.loadingPage1.set(false)
+      this.wishList.set(this.guestWishListService.wishList())
+    }
+
   }
 
 
@@ -71,8 +77,8 @@ export class WishlistComponent implements OnInit {
   }
 
   isInCart(productId: string): boolean {
-    return !!this.cartDetails().find((item) => {
+    return !!this.cartDetails().find((item) =>
       item.product._id === productId
-    })
+    )
   }
 }

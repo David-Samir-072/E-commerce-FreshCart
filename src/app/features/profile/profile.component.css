@@ -1,0 +1,40 @@
+.activeTab{
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+
+.activeTab div{
+  background-color: var(--color-primary-500);
+  color: white;
+}
+
+.activeTab svg{
+  color: var(--color-primary-500);
+}
+
+
+/* Inactive */
+.inActive{
+  color: var(--color-gray-600);
+  transition: all 0.2s ease;
+}
+
+.inActive:hover{
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-900);
+}
+
+.inActive div{
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-500);
+  transition: all 0.2s ease;
+}
+
+/* group-hover replacement */
+.inActive:hover div{
+  background-color: var(--color-gray-200);
+}
+
+.inActive svg{
+  color: var(--color-gray-400);
+}

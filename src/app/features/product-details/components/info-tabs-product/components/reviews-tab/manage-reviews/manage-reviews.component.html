@@ -1,0 +1,83 @@
+<div class="px-4 py-6 border-t border-gray-200">
+  @for (
+    review of showMore() ? sortedReviews() : sortedReviews().slice(0, 3);
+    track review._id
+  ) {
+    <app-review-item [review]="review"></app-review-item>
+  }
+</div>
+@if (detailedProduct().reviews.length > 3) {
+  <button
+    (click)="showMore.update((v)=>!v)"
+    class="flex p-3 items-center gap-2 text-sm font-medium bg-primary-50 border border-primary-500 rounded-xl text-primary-600 hover:text-primary-700 transition-colors cursor-pointer mx-auto -mt-3 mb-3"
+  >
+    {{ showMore() ? 'Show Less' : 'Show More' }}
+    <i
+      [class.rotate-180]="showMore()"
+      class="fa-solid text-xs transition-transform duration-300 fa-chevron-down"
+    ></i>
+  </button>
+}
+
+@if (isLogged()) {
+  @if (iswriteReview()) {
+    <app-write-review
+      [productId]="detailedProduct().id"
+      (iswriteReview)="iswriteReview.set($event)"
+    ></app-write-review>
+  } @else {
+    <div class="border-t border-gray-200 py-6">
+      <div class="py-8">
+        <div class="flex flex-col items-center justify-center gap-3">
+          <i class="fas fa-star text-4xl text-gray-300"></i>
+          @if (hasReview()) {
+            <p class="text-xl">You already reviewed the product.</p>
+          } @else {
+            <p>
+              Your opinion matters! Help other shoppers by sharing your experience with this
+              product.
+            </p>
+            <button
+              (click)="iswriteReview.set(true)"
+              class="text-primary-600 hover:text-primary-700 font-medium mt-2 cursor-pointer"
+            >
+              Write a Review
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+} @else {
+  <div class="border-t border-gray-200 py-6">
+    <div class="py-8">
+      <div class="bg-white rounded-xl p-8 text-center max-w-2xl mx-auto">
+        <div
+          class="w-14 h-14 rounded-full bg-primary-50 flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="fa-solid fa-user text-primary-600 text-xl"></i>
+        </div>
+        <p class="text-base font-medium text-gray-800 mb-2">Share Your Experience</p>
+        <p class="text-sm text-gray-400 leading-relaxed mb-6">
+          Bought this item? Your review helps real people make better choices. Sign in to share
+          yours — it only takes 30 seconds.
+        </p>
+        <div class="flex gap-3">
+          <a
+            routerlink="/login"
+            class="flex-1 py-2.5 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors cursor-pointer"
+            routerLink="/login"
+          >
+            Sign In </a
+          ><a
+            routerlink="/signup"
+            class="flex-1 py-2.5 text-sm font-medium text-primary-600 border border-primary-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+            routerLink="/register"
+          >
+            Create Account
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+}
