@@ -40,10 +40,6 @@ export class CartComponent implements OnInit {
         next: res => {
           this.cartDetails.set(res.data.products)
           this.totalPrice.set(res.data.totalCartPrice)
-
-          if ( this.cartDetails().length) {
-            this.mystorageService.set('cartOwner', res.data.cartOwner)
-          }
           this.loading.set(false)
         },
         error: err => {

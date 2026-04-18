@@ -29,9 +29,9 @@ export class OrdersComponent implements OnInit {
   }
 
   getUserOrdersData() {
-    if (this.mystorageService.getToken() && this.mystorageService.get('cartOwner')) {
+    if (this.mystorageService.getToken()) {
       this.loadingPage.set(true)
-      this.cartService.getUserOrders(this.mystorageService.get('cartOwner')!).subscribe({
+      this.cartService.getUserOrders(this.mystorageService.getUserId()!).subscribe({
         next: res => {
           this.allOrders.set(res);
           this.loadingPage.set(false)

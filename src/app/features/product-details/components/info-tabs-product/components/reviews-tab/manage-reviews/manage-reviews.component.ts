@@ -22,7 +22,7 @@ export class ManageReviewsComponent implements OnInit {
     const logged = this.mystorageService.getToken();
     this.isLogged.set(logged ? true : false)
 
-    const userId = this.mystorageService.get('cartOwner')
+    const userId = this.mystorageService.getUserId()
     if (this.detailedProduct().reviews.find((rev) => rev.user._id === userId)) {
       this.hasReview.set(true)
     }

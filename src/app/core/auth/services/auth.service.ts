@@ -48,8 +48,10 @@ export class AuthService {
   logOut() {
     localStorage.removeItem('freshToken');
     localStorage.removeItem('freshUser');
+    localStorage.removeItem('userId');
     sessionStorage.removeItem('freshToken');
     sessionStorage.removeItem('freshUser');
+    sessionStorage.removeItem('userId');
     this.wishListService.wishListIds.set([])
     this.isLogged.set(false)
     

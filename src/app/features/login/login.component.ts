@@ -7,6 +7,7 @@ import { CartService } from '../../core/services/cart.service';
 import { WishListService } from '../../core/services/wish-list.service';
 import { GuestWishListService } from '../../core/services/guest-wish-list.service';
 import { ToastrService } from 'ngx-toastr';
+import { jwtDecode } from "jwt-decode";
 
 @Component({
   selector: 'app-login',
@@ -57,12 +58,16 @@ export class LoginComponent {
       next: res => {
         if (res.message === 'success') {
           this.loading.set(false);
+          const decoded = jwtDecode<any>(res.token)
           if (this.keepMeSignedCheck.value) {
             localStorage.setItem('freshToken', res.token);
             localStorage.setItem('freshUser', JSON.stringify(res.user));
+            localStorage.setItem('userId', decoded.id);
           } else {
             sessionStorage.setItem('freshToken', res.token)
             sessionStorage.setItem('freshUser', JSON.stringify(res.user))
+            sessionStorage.setItem('userId', decoded.id);
+
           }
           this.authService.isLogged.set(true)
           this.authService.user.set(res.user)
@@ -95,10 +100,10 @@ export class LoginComponent {
     })
   }
 
-  sendGuestWishListToBE(){
+  sendGuestWishListToBE() {
     if (this.guestWishListService.wishList().length === 0) return
 
-    this.guestWishListService.wishList().forEach((item)=>{
+    this.guestWishListService.wishList().forEach((item) => {
       this.addtoWishList(item.id);
     })
   }
@@ -108,7 +113,7 @@ export class LoginComponent {
       next: res => {
         if (lastItemId === productId) {
           this.wishListService.wishListIds.set(res.data)
-          this.toastrService.success(`Guest wishList saved in user WishList`)          
+          this.toastrService.success(`Guest wishList saved in user WishList`)
           this.guestWishListService.wishList.set([])
         }
       }
@@ -122,7 +127,7 @@ export class LoginComponent {
 
         if (lastItemId === productID) {
           this.cartService.numOfCartItems.set(res.numOfCartItems)
-          this.toastrService.success(`Guest Cart saved in user Cart`)          
+          this.toastrService.success(`Guest Cart saved in user Cart`)
 
         }
 

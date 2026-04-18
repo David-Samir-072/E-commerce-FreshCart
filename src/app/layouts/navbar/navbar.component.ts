@@ -10,7 +10,6 @@ import { CartInLocalStorageService } from '../../core/services/cart-in-local-sto
 import { CategoriesService } from '../../core/services/categories.service';
 import { FormsModule } from '@angular/forms';
 import { GuestWishListService } from '../../core/services/guest-wish-list.service';
-
 @Component({
   selector: 'app-navbar',
   imports: [RouterLink, RouterLinkActive, FormsModule],
@@ -51,6 +50,7 @@ export class NavbarComponent implements OnInit {
     this.verifyToken()
     if (this.mystorageService.getUserObject()) {
       this.authService.user.set(JSON.parse(this.mystorageService.getUserObject()!))
+      
     }
 
     this.getNumOfCartItems();
@@ -79,9 +79,6 @@ export class NavbarComponent implements OnInit {
       this.cartService.getLoggedUserCart().subscribe({
         next: res => {
           this.cartService.numOfCartItems.set(res.numOfCartItems);
-          if (res.data.products.length) {
-            this.mystorageService.set('cartOwner', res.data.cartOwner)
-          }
         }
       })
     } else {

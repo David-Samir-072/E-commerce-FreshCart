@@ -23,8 +23,8 @@ export class ReviewItemComponent implements OnInit {
   private readonly communicationService = inject(CommunicationService)
 
   ngOnInit(): void {
-    if (this.mystorageService.get('cartOwner')) {
-      const userId = this.mystorageService.get('cartOwner')
+    if (this.mystorageService.getUserId()) {
+      const userId = this.mystorageService.getUserId()
       if (userId === this.review().user._id) {
         this.isUserReview.set(true)
       }

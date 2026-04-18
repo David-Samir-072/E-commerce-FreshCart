@@ -39,8 +39,8 @@ export class ProfileInformationComponent implements OnInit {
       })
     }
 
-    if (this.mystorageService.get('cartOwner')) {
-      this.userId.set(this.mystorageService.get('cartOwner')!)
+    if (this.mystorageService.getUserId()) {
+      this.userId.set(this.mystorageService.getUserId()!)
     }
 
   }

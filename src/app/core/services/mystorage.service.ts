@@ -25,22 +25,28 @@ export class MystorageService {
   //   }
   // }
 
-    getToken():string|null{
+  getToken(): string | null {
     if (isPlatformBrowser(this.pLATFORM_ID)) {
-    return localStorage.getItem('freshToken')||sessionStorage.getItem('freshToken')
+      return localStorage.getItem('freshToken') || sessionStorage.getItem('freshToken')
     }
     return null
   }
-  getUserObject():string|null{
+  getUserObject(): string | null {
     if (isPlatformBrowser(this.pLATFORM_ID)) {
-    return localStorage.getItem('freshUser')||sessionStorage.getItem('freshUser')
+      return localStorage.getItem('freshUser') || sessionStorage.getItem('freshUser')
     }
     return null
   }
-  
-  set(key: string,value: string) {
+  getUserId(): string | null {
     if (isPlatformBrowser(this.pLATFORM_ID)) {
-      return localStorage.setItem(key,value)
+      return localStorage.getItem('userId') || sessionStorage.getItem('userId')
+    }
+    return null
+  }
+
+  set(key: string, value: string) {
+    if (isPlatformBrowser(this.pLATFORM_ID)) {
+      return localStorage.setItem(key, value)
     }
     return null
   }
